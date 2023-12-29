@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>대리점 등록</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="대리점 등록"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: darkgoldenrod!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #FFFFFF!important;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .valuebox {
+            margin-left:5px;
+            margin-right:5px;
+            width: 100px;
+            text-align: right;
+        }
+        .vchange {
+            width: 25px;
+        }
+    </style>
+    <link rel="stylesheet" href="../../css/metro-all.min.css">
+    <script src="../../js/metro.min.js"></script>
+    <script>
+
+        function regist() {
+            alert('대리점 등록 완료되었습니다.\n임시가입번호를 전달하여 가입을 진행하세요.');
+            document.getElementById('hidden').style.display = null;
+            document.getElementById('code').value = '829351';
+        }
+    </script>
+</head>
+<body>
+    <div class="app-bar bg-hero fg-white" data-role="appbar">
+        <a href="#" class="brand no-hover">
+            <span style="max-width: 200px;  white-space: nowrap;" class="p-2">
+               본사
+            </span>
+        </a>
+        <ul class="app-bar-menu">
+            <li><a href="main.html"><span class='mif-home'> 본사 메인</span></a></li>
+            <li><a href="store-add.html"><span class='mif-wrench'> 대리점 등록</span></a></li>
+            <li><a href="changepw.html"><span class='mif-key'> 비밀번호 변경</span></a></li>
+        </ul>
+    </div>
+
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-profile'>사업자번호</span>" placeholder="사업자번호를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-room'>주소</span>" placeholder="주소를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-phone'>연락처</span>" placeholder="연락처를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-user'>담당자</span>" placeholder="담당자명을 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <div id="hidden" style="display: none;">
+            <label for="code">임시가입번호</label>
+            <input id="code" type="text" readonly>
+        </div>
+        <div class="space" style="height:30px;"></div>
+        <button style="width: 100%;" onclick="regist()"><span class='mif-install'> 대리점 등록</span></button>
+        <div class="space" style="height:30px;"></div>
+    </div>
+</body>
+</html>

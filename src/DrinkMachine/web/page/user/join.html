@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>회원가입</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="사용자 회원가입"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <link rel="stylesheet" href="/css/metro-all.min.css">
+    <script src="/js/metro.min.js"></script>
+    <style>
+        .check-button {
+            position: absolute;
+            top:15px;
+            right:15px;
+            width:30px;
+            height:28px;
+            z-index: 100;
+            background-color: transparent;
+            border: none;
+        }
+        .check-button:hover {
+            cursor: pointer;
+        }
+        .check-button.pass {
+            background-color: green;
+        }
+        .check-button.nonpass {
+            background-color: red;
+        }
+    </style>
+    <script>
+        function user_check(e) {
+            console.log(e);
+            var ip = document.body.querySelector('#username').value;
+            if(ip == 'admin' || ip == '') {
+                e.classList.remove('pass');
+                e.classList.add('nonpass');
+                alert('사용할 수 없는 아이디');
+            } else {
+                e.classList.remove('nonpass');
+                e.classList.add('pass');
+                alert('사용 가능한 아이디');
+            }
+        }
+        function user_check_change(e) {
+            var btn = document.body.querySelector('#user_check');
+            btn.classList.remove('nonpass');
+            btn.classList.remove('pass');
+        }
+        function join() {
+            window.location.href = "../login.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="container" style="margin-top:40px;">
+        <div data-role="panel" data-title-caption="사용자 회원가입" data-title-icon="<span class='mif-users'></span>">
+            <div class="space" style="height:30px;"></div>
+            <input type="text" data-role="input" data-prepend="<span class='mif-barcode'>사용자 가입코드</span>" placeholder="가입코드를 입력하세요.">
+            <div class="space" style="height:10px;"></div>
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <input onkeydown="user_check_change(this)" id="username" type="text" data-role="input" data-prepend="<span class='mif-user'>사용자 아이디</span>"  placeholder="사용할 아이디를 입력하세요.">
+                        <button id="user_check" class="mif-user-check check-button" onclick="user_check(this);"></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space" style="height:10px;"></div>
+            <input type="password" data-role="input" data-prepend="<span class='mif-lock'>패스워드</span>" placeholder="사용할 패스워드를 입력하세요.">
+            <div class="space" style="height:30px;"></div>
+            <button style="width: 100%;" onclick="join()"><span class='mif-user-plus'> 회원가입</span></button>
+            <div class="space" style="height:30px;"></div>
+        </div>
+    </div>
+</body>
+</html>

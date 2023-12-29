@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>제품 설치 등록</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="제품 설치 등록"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: #6FB6DE!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #fff!important;
+        }
+        .fg-custom {
+            color: #fff!important;
+        }
+        .panel {
+            border: 1px solid #0093CB!important;
+            color: #41464C!important;
+        }
+        .panel .panel-title {
+            border-bottom: 1px solid #0093CB!important;
+        }
+        .panel .panel-title .icon {
+            border-right: 1px solid #0093CB!important;
+        }
+        .input {
+            border: 1px solid #0093CB!important;
+        }
+        .input .prepend {
+            width: 130px!important;
+            /* text-align: right!important; */
+            background-color: #538ee662!important;
+            color: #41464C!important;
+        }
+        .button {
+            color: #41464C!important;   
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .valuebox {
+            margin-left:5px;
+            margin-right:5px;
+            width: 100px;
+            text-align: right;
+        }
+        .vchange {
+            width: 25px;
+        }
+        
+    </style>
+    <link rel="stylesheet" href="/css/metro-all.min.css">
+    <script src="/js/metro.min.js"></script>
+    <script>
+
+        function regist() {
+            alert('제품 등록 완료되었습니다.\n임시가입번호를 전달하여 가입을 진행하세요.');
+            document.getElementById('hidden').style.display = null;
+            document.getElementById('code').value = '829351';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    </script>
+</head>
+<body>
+    <div class="app-bar bg-hero fg-custom" data-role="appbar">
+        <a href="#" class="brand no-hover">
+            <span style="max-width: 200px;  white-space: nowrap;" class="p-2">
+                경동 계양 대리점
+            </span>
+        </a>
+        <ul class="app-bar-menu">
+            <li><a href="main.html"><span class='mif-home'> 메인</span></a></li>
+            <li><a href="user-list.html"><span class='mif-list'> 제품 설치 목록</span></a></li>
+            <li><a href="user-add.html"><span class='mif-wrench'> 제품 설치 등록</span></a></li>
+            <li><a href="changepw.html"><span class='mif-key'> 비밀번호 변경</span></a></li>
+        </ul>
+    </div>
+
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div data-role="panel" data-title-caption="Total Device 1004" data-title-icon="<span class='mif-news'></span>">
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Order</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">Emergency</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">30</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-qrcode'> 제품ID</span>" placeholder="제품ID를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-user'> 구매자명</span>" placeholder="구매자명을 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-phone'> 연락처</span>" placeholder="연락처를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-room'> 설치위치</span>" placeholder="설치위치를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-amazon'> AWS ID</span>" placeholder="AWS의 ID를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <input type="text" data-role="input" data-prepend="<span class='mif-key'> AWS KEY</span>" placeholder="AWS의 KEY를 입력하세요.">
+        <div class="space" style="height:30px;"></div>
+        <button style="width: 100%;" onclick="regist()"><span class='mif-install'> 설치 등록</span></button>
+        <div class="space" style="height:30px;"></div>
+        <div id="hidden" style="display: none;">
+            <input id="code" type="text" data-role="input" data-prepend="임시가입번호" readonly>
+            <div class="space" style="height:30px;"></div>
+        </div>
+    </div>
+</body>
+</html>

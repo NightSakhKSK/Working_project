@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.utarex.youngone.api.user.repository.UserRepo">
+	<select id="getInfo" resultType="User">
+        SELECT USR_ID AS USR_ID
+              ,MC_ID AS MC_ID
+              ,BUYER_NM AS BUYER_NM
+              ,FILTER_CNT AS FILTERS
+              ,NONFILTER_CNT AS NONFILTERS
+              ,(SELECT COUNT(1) FROM TB_EMGCY_HIST WHERE USR_ID = #{id}) AS EMERGENCY
+        FROM   TB_MC_INF
+              ,(SELECT SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN D.ORDER_QTY ELSE 0 END) AS FILTER_CNT
+                      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 0 ELSE D.ORDER_QTY END) AS NONFILTER_CNT
+			    FROM TB_ORDER_HIST O
+			    JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+			    WHERE O.USR_ID = #{id}) F
+        WHERE  USR_ID = #{id}
+    </select>
+    
+    <select id="getInstall" resultType="Install">
+        SELECT M.USR_ID AS USR_ID
+		      ,M.MC_ID AS MC_ID
+		      ,TO_CHAR(M.INSTL_DTTI, 'YYYY / MM / DD') AS INSTALL_DT
+		      ,A.AGNCY_NM AS MNG_AGNCY_NM
+		      ,REGEXP_REPLACE(A.TEL_NO, '^(02|[0-9]{3})[^0-9]*([0-9]{3,4})[^0-9]*([0-9]{3,4})$', '\\1-\\2-\\3') AS MNG_AGNCY_TEL_NO
+		FROM TB_MC_INF M
+		LEFT JOIN TB_AGNCY_INF A ON M.AGNCY_ID = A.AGNCY_ID 
+        WHERE  USR_ID = #{id}
+    </select>
+    
+    <update id="changePw">
+        UPDATE TB_USR_INF SET
+    	       USR_PW = SHA2(#{newPw},256)
+    	WHERE  USR_ID = #{id}
+    	AND    USR_PW = SHA2(#{oldPw},256)
+    </update>
+    
+    <insert id="insAction">
+    	INSERT INTO TB_MC_CTRL_HIST
+    	(
+    	  CTRL_REQR_ID
+    	 ,MC_ID
+    	 ,CTRL_CD
+    	 ,CTRL_VAL
+    	 ,FIRST_REG_DTTI
+    	)
+    	SELECT
+    	  USR_ID
+    	 ,MC_ID
+    	 ,#{action}
+    	 ,#{value}
+    	 ,NOW()
+        FROM TB_MC_INF
+        WHERE USR_ID = #{usrId}
+    </insert>
+    
+    <insert id="insOrder">
+    	INSERT INTO TB_ORDER_HIST(
+    	  USR_ID
+    	 ,AGNCY_ID
+    	 ,ORDER_DTTI
+    	 ,FIRST_REG_DTTI
+    	)
+    	SELECT 
+    	  USR_ID
+    	 ,AGNCY_ID
+    	 ,NOW()
+    	 ,NOW()
+    	FROM TB_MC_INF
+    	WHERE USR_ID = #{usrId}
+	    <selectKey keyProperty="orderSeq" resultType="int" order="AFTER">
+	        SELECT LAST_INSERT_ID()
+	    </selectKey>
+    </insert>
+    <insert id="insOrderDtl">
+    	INSERT INTO TB_ORDER_DTL_HIST(
+    	  ORDER_SEQ
+    	 ,ORDER_DTL_SEQ
+    	 ,USR_ID
+    	 ,LG_CTGR_CD
+    	 ,MD_CTGR_CD
+    	 ,ORDER_QTY
+    	 ,FIRST_REG_DTTI
+    	) VALUES (
+    	  #{orderSeq}
+    	 ,#{orderDtlSeq}
+    	 ,#{usrId}
+    	 ,#{category}
+    	 ,#{id}
+    	 ,#{value}
+    	 ,NOW()
+    	)
+    </insert>
+    <select id="lstOrderDtl"  resultType="OrderDtl">
+    	SELECT O.ORDER_SEQ
+    	      ,D.ORDER_DTL_SEQ
+    	      ,D.USR_ID
+    	      ,D.LG_CTGR_CD AS CATEGORY
+    	      ,D.MD_CTGR_CD AS ID
+    	      ,D.ORDER_QTY  AS VALUE
+    	      ,TO_CHAR(O.ORDER_DTTI, 'YY/MM/DD') AS ORDER_DT
+    	FROM   TB_ORDER_DTL_HIST D
+    	JOIN   TB_ORDER_HIST O
+    	WHERE  O.USR_ID = #{id}
+    	AND    O.ORDER_SEQ = D.ORDER_SEQ
+    	ORDER BY 1 DESC, 2 DESC
+    </select>
+    <insert id="insEmergency">
+    	INSERT INTO TB_EMGCY_HIST (
+    	  MC_ID
+    	 ,AGNCY_ID
+    	 ,USR_ID
+    	 ,EMGCY_TP_CD
+    	 ,FIRST_REG_DTTI
+    	)
+    	SELECT MC_ID
+    	      ,AGNCY_ID
+    	      ,USR_ID
+    	      ,#{code} AS EMGCY_TP_CD
+    	      ,NOW() AS FIRST_REG_DTTI
+    	FROM   TB_MC_INF
+    	WHERE  USR_ID = #{id}
+    </insert>
+	<select id="getEmergencyList" resultType="Emergency">
+		SELECT EMGCY_SEQ AS SEQ
+			 ,TO_CHAR(FIRST_REG_DTTI, 'YY/MM/DD') AS DATE
+    	      ,EMGCY_TP_CD
+    	      ,SYMPT_CNTN
+    	      ,VISIT_CNTN
+    	      ,ACTN_CNTN
+    	      ,STAT_CD
+		FROM   TB_EMGCY_HIST
+		WHERE  USR_ID = #{usrId}
+-- 		  AND    PROC_YN IS NULL
+		ORDER BY FIRST_REG_DTTI DESC
+	</select>
+
+	<select id="getUserIdFromMcId" resultType="string">
+		SELECT USR_ID
+		FROM TB_MC_INF
+		WHERE MC_ID = #{mcId}
+	</select>
+    
+    <select id="getDeviceStat"  resultType="DeviceStatus">
+    	SELECT S.MC_ID             
+              ,S.ICE_STAT          
+              ,S.CW_STAT           
+              ,S.SPKL_STAT         
+              ,S.HW_STAT           
+              ,S.WL_STAT           
+              ,S.WO_STAT
+    	      ,S.HIT_STAT
+			  ,S.COMP_STAT
+    	      ,S.BOOST_STAT
+              ,S.TBDT_1_SENSR
+              ,S.TBDT_2_SENSR      
+              ,S.PH_SENSR          
+              ,S.WQ_1_SENSR        
+              ,S.WQ_2_SENSR        
+              ,S.SYRUP_1_REMN      
+              ,S.SYRUP_2_REMN      
+              ,S.SYRUP_3_REMN      
+              ,S.SYRUP_4_REMN      
+              ,S.GAS_RCHRG_STAT    
+              ,S.CW_TANK_UVC_REMN  
+              ,S.SPKL_TANK_UVC_REMN
+              ,S.ICE_TANK_UVC_REMN 
+              ,S.DRK_EO_UVC_REMN   
+              ,S.ICE_EO_UVC_REMN   
+              ,S.SW_VER            
+              ,S.FW_VER            
+              ,S.FIRST_REG_DTTI    
+              ,S.LAST_UPD_DTTI     
+        FROM   TB_MC_INF M
+        JOIN TB_MC_STAT_INF S ON M.MC_ID = S.MC_ID
+        WHERE  M.USR_ID = #{usrId}
+    </select>
+</mapper>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>디바이스 상태</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="사용자 디바이스 상태 페이지"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: darkgoldenrod!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #FFFFFF!important;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .valuebox {
+            margin-left:5px;
+            margin-right:5px;
+            width: 100px;
+            text-align: right;
+        }
+        .vchange {
+            width: 25px;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/metro-all.min.css">
+    <script src="/js/metro.min.js"></script>
+    <script>
+        var param = {};
+        if(window.location.href.indexOf("#user") > -1) {
+            var query = window.location.href.replace(/^[^#]+#/,'');
+            var params = query.split("&");
+            console.log(params)
+            for(var i=0;i<params.length;i++) {
+                var pair = params[i].split("=");
+                console.log(pair[0], pair[1]);
+                param[pair[0]] = pair[1];
+            }
+        }
+        if(param.user === undefined) {
+            param.user = "KR-0002";
+        }
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var name = document.getElementById("userid");
+            var device = document.getElementById("device_link");
+            var emergency = document.getElementById("emergency_link");
+            name.innerText = param.user;
+            device.href += "#user=" + param.user;
+            emergency.href += "#user=" + param.user;
+        });
+    </script>
+</head>
+<body>
+    <div class="app-bar bg-hero fg-white" data-role="appbar">
+        <a href="#" class="brand no-hover">
+            <span id="userid" style="max-width: 200px;  white-space: nowrap;" class="p-2">
+               KR-0002
+            </span>
+        </a>
+        <a id="emergency_link" href="./user-emergency.html" class="app-bar-item"><span class='mif-help'> Emergency</span></a>
+        <a id="device_link" href="./user-device.html" class="app-bar-item"><span class='mif-devices'> Device Status</span></a>
+        <ul class="app-bar-menu">
+            <li><a href="main.html"><span class='mif-home'> 메인</span></a></li>
+            <li><a href="user-list.html"><span class='mif-list'> 제품 설치 목록</span></a></li>
+            <li><a href="user-add.html"><span class='mif-wrench'> 제품 설치 등록</span></a></li>
+            <li><a href="changepw.html"><span class='mif-key'> 비밀번호 변경</span></a></li>
+        </ul>
+    </div>
+
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div data-role="panel" data-title-caption="Total Order 3" data-title-icon="<span class='mif-news'></span>">
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Cylinder & Syrups</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Filters</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">Emergency</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">2</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">1</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <h4>History</h4>
+        <table class="table table-border cell-border">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>증상</th>
+                    <th>원인</th>
+                    <th>조치</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Old</td>
+                    <td>Replace</td>
+                </tr>
+                <tr>
+                    <td>21/12/01</td>
+                    <td>ICE Fail</td>
+                    <td>VALVE</td>
+                    <td>Replace</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

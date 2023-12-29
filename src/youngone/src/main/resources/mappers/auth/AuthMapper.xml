@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.utarex.youngone.api.auth.repository.AuthRepo">
+	<select id="getMember" resultType="Member">
+        SELECT   ADMR_ID AS ID
+                ,ADMR_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'CORP' AS ROLE
+        FROM     TB_CORP_INF
+        WHERE    ADMR_ID = #{id}
+        UNION ALL
+        SELECT   AGNCY_ID AS ID
+                ,AGNCY_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'AGENCY' AS ROLE
+        FROM     TB_AGNCY_INF
+        WHERE    AGNCY_ID = #{id}
+        UNION ALL
+        SELECT   USR_ID AS ID
+                ,USR_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'USER' AS ROLE
+        FROM     TB_USR_INF
+        WHERE    USR_ID = #{id}
+    </select>
+    
+    <select id="getMemberByIdAndPassword" resultType="Member">
+        SELECT   ADMR_ID AS ID
+                ,ADMR_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'CORP' AS ROLE
+        FROM     TB_CORP_INF
+        WHERE    ADMR_ID = #{id}
+        AND      ADMR_PW = SHA2(#{pw},256)
+        UNION ALL
+        SELECT   AGNCY_ID AS ID
+                ,AGNCY_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'AGENCY' AS ROLE
+        FROM     TB_AGNCY_INF
+        WHERE    AGNCY_ID = #{id}
+        AND      AGNCY_PW = SHA2(#{pw},256)
+        UNION ALL
+        SELECT   USR_ID AS ID
+                ,USR_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'USER' AS ROLE
+        FROM     TB_USR_INF
+        WHERE    USR_ID = #{id}
+        AND      USR_PW = SHA2(#{pw},256)
+        
+    </select>
+    
+    <select id="lstMembers" resultType="Member">
+        SELECT   ADMR_ID AS ID
+                ,ADMR_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'CORP' AS ROLE
+        FROM     TB_CORP_INF
+        UNION ALL
+        SELECT   AGNCY_ID AS ID
+                ,AGNCY_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'AGENCY' AS ROLE
+        FROM     TB_AGNCY_INF
+        UNION ALL
+        SELECT   USR_ID AS ID
+                ,USR_PW AS PW
+                ,LAST_LOGIN_DTTI
+                ,FIRST_REG_DTTI
+                ,LAST_UPD_DTTI
+                ,'USER' AS ROLE
+        FROM     TB_USR_INF
+    </select>
+</mapper>

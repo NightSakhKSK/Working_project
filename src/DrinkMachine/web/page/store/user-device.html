@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>디바이스 상태</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="사용자 디바이스 상태 페이지"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: darkgoldenrod!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #FFFFFF!important;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .valuebox {
+            margin-left:5px;
+            margin-right:5px;
+            width: 100px;
+            text-align: right;
+        }
+        .vchange {
+            width: 25px;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/metro-all.min.css">
+    <script src="/js/metro.min.js"></script>
+    <script>
+        var param = {};
+        if(window.location.href.indexOf("#user") > -1) {
+            var query = window.location.href.replace(/^[^#]+#/,'');
+            var params = query.split("&");
+            console.log(params)
+            for(var i=0;i<params.length;i++) {
+                var pair = params[i].split("=");
+                console.log(pair[0], pair[1]);
+                param[pair[0]] = pair[1];
+            }
+        }
+        if(param.user === undefined) {
+            param.user = "KR-0002";
+        }
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var name = document.getElementById("userid");
+            var history = document.getElementById("history_link");
+            var emergency = document.getElementById("emergency_link");
+            name.innerText = param.user;
+            history.href += "#user=" + param.user;
+            emergency.href += "#user=" + param.user;
+        });
+    </script>
+</head>
+<body>
+    <div class="app-bar bg-hero fg-white" data-role="appbar">
+        <a href="#" class="brand no-hover">
+            <span id="userid" style="max-width: 200px;  white-space: nowrap;" class="p-2">
+               KR-0002
+            </span>
+        </a>
+        <a id="history_link" href="./user-history.html" class="app-bar-item"><span class='mif-history'> History</span></a>
+        <a id="emergency_link" href="./user-emergency.html" class="app-bar-item"><span class='mif-help'> Emergency</span></a>
+        <ul class="app-bar-menu">
+            <li><a href="main.html"><span class='mif-home'> 메인</span></a></li>
+            <li><a href="user-list.html"><span class='mif-list'> 제품 설치 목록</span></a></li>
+            <li><a href="user-add.html"><span class='mif-wrench'> 제품 설치 등록</span></a></li>
+            <li><a href="changepw.html"><span class='mif-key'> 비밀번호 변경</span></a></li>
+        </ul>
+    </div>
+
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div data-role="panel" data-title-caption="Total Order 3" data-title-icon="<span class='mif-news'></span>">
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Cylinder & Syrups</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Filters</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">Emergency</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">2</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">1</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table" style="background-color: #0d8ef0">
+            <tbody>
+                <tr>
+                    <td>냉수</td>
+                    <td>
+                        <button>10초</button>
+                        <button>20초</button>
+                        <button>30초</button>
+                        <button>40초</button>
+                        <button>50초</button>
+                        <button>60초</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>온수</td>
+                    <td>
+                        <button>10초</button>
+                        <button>20초</button>
+                        <button>30초</button>
+                        <button>40초</button>
+                        <button>50초</button>
+                        <button>60초</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>탄산수</td>
+                    <td>
+                        <button>10초</button>
+                        <button>20초</button>
+                        <button>30초</button>
+                        <button>40초</button>
+                        <button>50초</button>
+                        <button>60초</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table" style="background-color: #0d8ef0">
+            <tbody>
+                <tr>
+                    <td>냉수온도</td>
+                    <td>0°C</td>
+                    <td> </td>
+                    <td>냉수탱크UVC</td>
+                    <td>0분</td>
+                </tr>
+                <tr>
+                    <td>온수온도</td>
+                    <td>0°C</td>
+                    <td></td>
+                    <td>출수부UVC</td>
+                    <td>0분</td>
+                </tr>
+                <tr>
+                    <td>탄산수온도</td>
+                    <td>0°C</td>
+                    <td></td>
+                    <td>탄산탱크UVC</td>
+                    <td>0분</td>
+                </tr>
+                <tr>
+                    <td>얼음컵거리</td>
+                    <td>0.0cm</td>
+                    <td></td>
+                    <td>얼음저장소UVC</td>
+                    <td>0분</td>
+                </tr>
+                <tr>
+                    <td>얼음컵무계</td>
+                    <td>0.0Kg</td>
+                    <td></td>
+                    <td>얼음출구부UVC</td>
+                    <td>0분</td>
+                </tr>
+                <tr>
+                    <td>음료컵거리</td>
+                    <td>0.0cm</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>음료컵무계</td>
+                    <td>0.0Kg</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>SYRUP1무계</td>
+                    <td>0.0Kg</td>
+                    <td> </td>
+                    <td>SYRUP2무계</td>
+                    <td>0.0Kg</td>
+                </tr>
+                <tr>
+                    <td>SYRUP3무계</td>
+                    <td>0.0Kg</td>
+                    <td> </td>
+                    <td>SYRUP4무계</td>
+                    <td>0.0Kg</td>
+                </tr>
+                <tr>
+                    <td>turbidity수치</td>
+                    <td>0.000NTU</td>
+                    <td></td>
+                    <td>WATER PDS</td>
+                    <td>0.00ppm</td>
+                </tr>
+                <tr>
+                    <td>PH수치</td>
+                    <td>0.00PH</td>
+                    <td></td>
+                    <td>스탭모터 위치</td>
+                    <td>원점</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table" style="background-color: #0d8ef0">
+            <tbody>
+                <tr>
+                    <td>스텝모터</td>
+                    <td>
+                        <button>초기화</button>
+                    </td>
+                    <td>냉수탱크UVC</td>
+                    <td>
+                        <button>초기화</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>탄산탱크UVC</td>
+                    <td>
+                        <button>초기화</button>
+                    </td>
+                    <td>얼음저장고UVC</td>
+                    <td>
+                        <button>초기화</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>음료출수구UVC</td>
+                    <td>
+                        <button>초기화</button>
+                    </td>
+                    <td>얼음출수구UVC</td>
+                    <td>
+                        <button>초기화</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

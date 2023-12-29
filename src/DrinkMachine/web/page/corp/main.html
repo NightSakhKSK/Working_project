@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>본사 메인</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="본사 메인 페이지"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: darkgoldenrod!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #FFFFFF!important;
+        }
+        .distribute {
+            background-color: #dea917!important;
+            border-radius: 10px;
+        }
+        div.distribute {
+            cursor: pointer!important;
+        }
+    </style>
+    <link rel="stylesheet" href="../../css/metro-all.min.css">
+    <script src="../../js/metro.min.js"></script>
+    <script>
+        function movestore(event) {
+            window.location.href = "./store.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="app-bar bg-hero fg-white" data-role="appbar">
+        <a href="#" class="brand no-hover">
+            <span style="max-width: 200px;  white-space: nowrap;" class="p-2">
+               본사
+            </span>
+        </a>
+        <ul class="app-bar-menu">
+            <li><a href="store-add.html"><span class='mif-wrench'> 대리점 등록</span></a></li>
+            <li><a href="changepw.html"><span class='mif-key'> 비밀번호 변경</span></a></li>
+        </ul>
+    </div>
+    
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div data-role="panel" data-title-caption="Total Device 29,508" data-title-icon="<span class='mif-news'></span>">
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">ORDER</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Filters</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">Emergency</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">9370</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">10</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <h4>Process</h4>
+        <div class="grid" style="padding-top: 20px;">
+            <div class="row">
+                <div class="cell">
+                    <div class="d-flex flex-justify-center">
+                        Cyilnder &amp; Syrup
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-center">
+                        Filter
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-center">
+                        Emergency
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell">
+                    <div class="d-flex flex-justify-center">
+                        <div id="donut1" data-role="donut" data-value="8752" 	data-total="9370" data-cap="건"
+                        data-hole=".6" data-stroke="#f5f5f5" data-fill="#9C27B0"
+                        data-animate="10" data-show-value="true"></div>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-center">
+                        <div id="donut2" data-role="donut" data-value="9" 	data-total="10" data-cap="건"
+                        data-hole=".6" data-stroke="#f5f5f5" data-fill="#f6855c"
+                        data-animate="10" data-show-value="true"></div>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-center">
+                        <div id="donut3" data-role="donut" data-value="1" 	data-total="2" data-cap="건"
+                        data-hole=".6" data-stroke="#f5f5f5" data-fill="#f43232"
+                        data-animate="10" data-show-value="true"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <h4>Distribute List</h4>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="distribute" data-role="panel" data-title-caption="경동 계양 대리점" onclick="movestore.call(this, event)">
+                            Device : 1004<br>
+                            Order : 30<br>
+                            Filter : 2<br>
+                            Emergency : 2<br>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="distribute" data-role="panel" data-title-caption="경동 계양 강원점" onclick="movestore.call(this, event)">
+                            Device : 504<br>
+                            Order : 10<br>
+                            Filter : 3<br>
+                            Emergency : 0<br>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="distribute" data-role="panel" data-title-caption="풀무원" onclick="movestore.call(this, event)">
+                            Device : 20,500<br>
+                            Order : 2,330<br>
+                            Filter : 2<br>
+                            Emergency : 0<br>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="distribute" data-role="panel" data-title-caption="농심" onclick="movestore.call(this, event)">
+                            Device : 7,500<br>
+                            Order : 7,000<br>
+                            Filter : 3<br>
+                            Emergency : 0<br>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

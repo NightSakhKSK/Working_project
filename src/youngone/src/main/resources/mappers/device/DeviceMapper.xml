@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.utarex.youngone.api.device.repository.DeviceRepo">
+	<insert id="pushInfo">
+    	INSERT INTO TB_MC_STAT_INF
+    	(
+    	  MC_ID             
+         ,ICE_STAT          
+         ,CW_STAT           
+         ,SPKL_STAT         
+         ,HW_STAT           
+         ,WL_STAT           
+         ,WO_STAT
+         ,HIT_STAT
+         ,COMP_STAT
+         ,BOOST_STAT
+         ,TBDT_1_SENSR
+         ,TBDT_2_SENSR      
+         ,PH_SENSR          
+         ,WQ_1_SENSR        
+         ,WQ_2_SENSR        
+         ,SYRUP_1_REMN      
+         ,SYRUP_2_REMN      
+         ,SYRUP_3_REMN      
+         ,SYRUP_4_REMN      
+         ,GAS_RCHRG_STAT    
+         ,CW_TANK_UVC_REMN  
+         ,SPKL_TANK_UVC_REMN
+         ,ICE_TANK_UVC_REMN 
+         ,DRK_EO_UVC_REMN   
+         ,ICE_EO_UVC_REMN   
+         ,SW_VER            
+         ,FW_VER            
+         ,FIRST_REG_DTTI     
+    	) VALUES (
+          #{mcId}
+         ,#{iceStat}
+         ,#{cwStat}
+         ,#{spklStat}
+         ,#{hwStat}
+         ,#{wlStat}
+         ,#{woStat}
+         ,#{hitStat}
+         ,#{compStat}
+         ,#{boostStat}
+         ,#{tbdt1Sensr}
+         ,#{tbdt2Sensr}
+         ,#{phSensr}
+         ,#{wq1Sensr}
+         ,#{wq2Sensr}
+         ,#{syrup1Remn}
+         ,#{syrup2Remn}
+         ,#{syrup3Remn}
+         ,#{syrup4Remn}
+         ,#{gasRchrgRemn}
+         ,#{cwTankUvcRemn}
+         ,#{spklTankUvcRemn}
+         ,#{iceTankUvcRemn}
+         ,#{drkEoUvcRemn}
+         ,#{iceEoUvcRemn}
+         ,#{swVer}
+         ,#{fwVer}
+         ,NOW()
+    	)
+    	ON DUPLICATE KEY UPDATE
+    	  ICE_STAT           = #{iceStat}        
+         ,CW_STAT            = #{cwStat}         
+         ,SPKL_STAT          = #{spklStat}       
+         ,HW_STAT            = #{hwStat}         
+         ,WL_STAT            = #{wlStat}
+         ,WO_STAT            = #{woStat}
+         ,HIT_STAT           = #{hitStat}
+         ,COMP_STAT          = #{compStat}
+         ,BOOST_STAT         = #{boostStat}
+         ,TBDT_1_SENSR       = #{tbdt1Sensr}
+         ,TBDT_2_SENSR       = #{tbdt2Sensr}     
+         ,PH_SENSR           = #{phSensr}        
+         ,WQ_1_SENSR         = #{wq1Sensr}       
+         ,WQ_2_SENSR         = #{wq2Sensr}       
+         ,SYRUP_1_REMN       = #{syrup1Remn}     
+         ,SYRUP_2_REMN       = #{syrup2Remn}     
+         ,SYRUP_3_REMN       = #{syrup3Remn}     
+         ,SYRUP_4_REMN       = #{syrup4Remn}     
+         ,GAS_RCHRG_STAT     = #{gasRchrgRemn}   
+         ,CW_TANK_UVC_REMN   = #{cwTankUvcRemn}  
+         ,SPKL_TANK_UVC_REMN = #{spklTankUvcRemn}
+         ,ICE_TANK_UVC_REMN  = #{iceTankUvcRemn} 
+         ,DRK_EO_UVC_REMN    = #{drkEoUvcRemn}   
+         ,ICE_EO_UVC_REMN    = #{iceEoUvcRemn}   
+         ,SW_VER             = #{swVer}          
+         ,FW_VER             = #{fwVer}          
+    </insert>
+</mapper>

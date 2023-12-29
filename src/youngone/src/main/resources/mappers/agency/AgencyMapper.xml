@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.utarex.youngone.api.agency.repository.AgencyRepo">
+	<select id="getInfo" resultType="Agency">
+        SELECT AGNCY_ID AS ID
+              ,AGNCY_NM AS NM
+              ,(SELECT COUNT(1) FROM TB_MC_INF WHERE AGNCY_ID = #{id}) AS DEVICES
+              ,FILTER_CNT AS FILTERS
+              ,NONFILTER_CNT AS NONFILTERS
+              ,(SELECT COUNT(1) FROM TB_EMGCY_HIST WHERE AGNCY_ID = #{id}) AS EMERGENCY
+        FROM   TB_AGNCY_INF A
+              ,(SELECT SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN D.ORDER_QTY ELSE 0 END) AS FILTER_CNT
+                      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 0 ELSE D.ORDER_QTY END) AS NONFILTER_CNT
+				    FROM TB_ORDER_HIST O
+				    JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+				    WHERE AGNCY_ID = #{id}) F
+        WHERE  AGNCY_ID = #{id}
+    </select>
+    
+    <select id="getUsrId" resultType="string">
+    	SELECT USR_ID
+    	FROM   TB_MC_INF
+    	WHERE  MC_ID = #{mcId}
+    	AND    AGNCY_ID = #{agncyId}
+    </select>
+    
+    <select id="getUserEmergency" resultType="Emergency">
+    	SELECT EMGCY_SEQ AS SEQ
+    	      ,TO_CHAR(FIRST_REG_DTTI, 'YY/MM/DD') AS DATE
+    	      ,EMGCY_TP_CD
+    	      ,SYMPT_CNTN
+    	      ,STAT_CD
+    	FROM   TB_EMGCY_HIST
+    	WHERE  USR_ID = #{usrId}
+    	AND    PROC_YN IS NULL
+    	ORDER BY FIRST_REG_DTTI DESC
+    </select>
+
+	<select id="getEmergency" resultType="Emergency">
+		SELECT E.EMGCY_SEQ AS SEQ
+		,TO_CHAR(E.FIRST_REG_DTTI, 'YY/MM/DD') AS DATE
+		,E.EMGCY_TP_CD
+		,E.SYMPT_CNTN
+		,E.STAT_CD
+		,M.MC_ID
+		FROM   TB_EMGCY_HIST E
+		JOIN   TB_MC_INF M ON M.USR_ID = E.USR_ID
+		WHERE  E.AGNCY_ID = #{agncyId}
+		<if test="today == true">
+			AND   DATE(E.FIRST_REG_DTTI) = DATE(NOW())
+		</if>
+		ORDER BY E.FIRST_REG_DTTI DESC
+	</select>
+    
+    <select id="getUserHistory" resultType="History">
+    	SELECT EMGCY_SEQ AS SEQ
+    	      ,TO_CHAR(FIRST_REG_DTTI, 'YY/MM/DD') AS DATE
+    	      ,EMGCY_TP_CD
+    	      ,SYMPT_CNTN
+    	      ,STAT_CD
+    	      ,SYMPT_CNTN
+    	      ,CAUSE_DESC
+    	      ,ACTN_CNTN
+    	FROM   TB_EMGCY_HIST
+		WHERE    PROC_YN = 'Y'
+		<if test="usrId != null">
+		AND  USR_ID = #{usrId}
+		</if>
+    	ORDER BY FIRST_REG_DTTI DESC
+    </select>
+    
+    <update id="updVisit">
+    	UPDATE TB_EMGCY_HIST SET
+    		VISIT_CNTN = #{plan}
+    	   ,STAT_CD = '처리중'
+    	   ,PROC_DTTI = NOW()
+    	   ,LAST_UPD_DTTI = NOW()
+    	WHERE EMGCY_SEQ = #{seq}
+    </update>
+    
+    <update id="updEmergency">
+    	UPDATE TB_EMGCY_HIST SET
+    		SYMPT_CNTN = #{symptCntn}
+    	   ,CAUSE_DESC = #{causeDesc}
+    	   ,ACTN_CNTN = #{actnCntn}
+    	   ,STAT_CD = '완료'
+    	   ,PROC_DTTI = NOW()
+    	   ,PROC_YN = 'Y'
+    	   ,LAST_UPD_DTTI = NOW()
+    	WHERE EMGCY_SEQ = #{seq}
+    </update>
+    
+    <select id="getProcess" resultType="ProcessInfo">
+        SELECT FILTER_CNT AS FILTERS
+              ,NONFILTER_CNT AS NONFILTERS
+              ,(SELECT COUNT(1) FROM TB_EMGCY_HIST WHERE AGNCY_ID = #{id} AND PROC_YN = 'Y') AS EMERGENCY
+        FROM   (SELECT SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN D.ORDER_QTY ELSE 0 END) AS FILTER_CNT
+                      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 0 ELSE D.ORDER_QTY END) AS NONFILTER_CNT
+				    FROM TB_ORDER_HIST O
+				    JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+				    WHERE O.AGNCY_ID = #{id}
+				    AND O.PROC_YN = 'Y') F
+    </select>
+    
+    <select id="getOrderList" resultType="Order">
+	    SELECT  TO_CHAR(O.ORDER_DTTI, 'YYYY / MM / DD') AS ORDER_DTTI
+		       ,O.ORDER_SEQ
+		       ,D.ORDER_DTL_SEQ
+		       ,M.MC_ID
+		       ,O.PROC_YN
+		       ,O.PROC_DTTI
+		       ,D.MD_CTGR_CD
+			   ,D.ORDER_QTY
+			   ,'ORDER' AS TP
+		 FROM TB_ORDER_HIST O
+		 JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+		 JOIN TB_MC_INF M ON O.USR_ID = M.USR_ID
+		 <choose>
+			<when test='mcId == null'>
+		WHERE O.AGNCY_ID = #{agncyId}
+		AND   O.PROC_YN IS NULL
+		 UNION ALL
+		 SELECT TO_CHAR(FIRST_REG_DTTI, 'YYYY / MM / DD') AS EMGCY_DTTI
+		       ,EMGCY_SEQ
+		       ,NULL
+		       ,MC_ID
+		       ,PROC_YN
+		       ,PROC_DTTI
+		       ,'Emergency' AS MD_CTGR_CD
+		       ,NULL
+		       ,'EMERGENCY' AS TP
+		 FROM TB_EMGCY_HIST
+		 WHERE AGNCY_ID = #{agncyId}
+		 AND   PROC_YN IS NULL
+			</when>
+			<otherwise>
+		WHERE O.USR_ID = (SELECT USR_ID FROM TB_MC_INF WHERE MC_ID = #{mcId})
+		AND   O.PROC_YN IS NULL
+			</otherwise>
+		 </choose>
+		 
+		 ORDER BY 1 DESC, 2 DESC, 3
+    </select>
+
+	<select id="getHistoryOrderList" resultType="Order">
+		SELECT  TO_CHAR(O.ORDER_DTTI, 'YYYY / MM / DD') AS ORDER_DTTI
+		,O.ORDER_SEQ
+		,D.ORDER_DTL_SEQ
+		,M.MC_ID
+		,O.PROC_YN
+		,O.PROC_DTTI
+		,D.MD_CTGR_CD
+		,D.ORDER_QTY
+		,'ORDER' AS TP
+		FROM TB_ORDER_HIST O
+		JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+		JOIN TB_MC_INF M ON O.USR_ID = M.USR_ID
+		WHERE O.AGNCY_ID = #{agncyId}
+		<if test="today == true">
+			AND   DATE(O.ORDER_DTTI) = DATE(NOW())
+		</if>
+		ORDER BY 1 DESC, 2 DESC, 3
+	</select>
+    
+    <update id="updDelivery">
+    	UPDATE TB_ORDER_HIST SET
+    		PROC_YN = 'Y'
+    	   ,PROC_DTTI = NOW()
+    	   ,LAST_UPD_DTTI = NOW()
+    	WHERE AGNCY_ID = #{agncyId}
+    	AND   USR_ID = (SELECT USR_ID FROM TB_MC_INF WHERE MC_ID = #{mcId})
+    	AND   ORDER_SEQ = #{seq}
+    </update>
+        
+    <insert id="addUser">
+        INSERT INTO TB_MC_INF
+        (
+          MC_ID
+         ,AGNCY_ID
+         ,BUYER_NM
+         ,TEL_NO
+         ,INSTL_DTTI
+         ,INSTL_LOC_DESC
+         ,AWS_ID
+         ,AWS_KEY
+         ,TEMP_ISSD_NO
+         ,FIRST_REG_DTTI
+        ) VALUES (
+          #{mcId}
+         ,#{agncyId}
+         ,#{buyerNm}
+         ,#{telNo}
+         ,NOW()
+         ,#{instLocDesc}
+         ,#{awsId}
+         ,#{awsKey}
+         ,#{tempIssdNo}
+         ,NOW()
+        )
+    </insert>
+    
+    <select id="doSearchUser" resultType="UserSearchResult">
+    	SELECT MC_ID
+		      ,BUYER_NM
+		      ,REGEXP_REPLACE(TEL_NO, '^(02|[0-9]{3})[^0-9]*([0-9]{3,4})[^0-9]*([0-9]{3,4})$', '\\1-\\2-\\3') AS TEL_NO
+		      ,TO_CHAR(INSTL_DTTI, 'YY/MM/DD') AS INSTL_DTTI
+		      ,INSTL_LOC_DESC
+		FROM   TB_MC_INF
+		
+		WHERE  1 = 1
+		<if test='agncyId != "" and agncyId != null'>
+		AND    AGNCY_ID = #{agncyId}
+		</if>
+		<if test='text != ""'>
+		AND    (
+			REGEXP_REPLACE(BUYER_NM, '\\s', '') REGEXP #{text}
+			OR
+			REGEXP_REPLACE(INSTL_LOC_DESC, '\\s', '') REGEXP #{text}
+			OR
+			REGEXP_REPLACE(MC_ID, '\\s', '') REGEXP #{text}
+			OR
+			REGEXP_REPLACE(TEL_NO, '\\s|-', '') REGEXP REGEXP_REPLACE(#{text}, '\\s|-', '')
+		)
+		</if>
+    </select>
+    
+    <update id="changePw">
+        UPDATE TB_AGNCY_INF SET
+    	       AGNCY_PW = SHA2(#{newPw},256)
+    	WHERE  AGNCY_ID = #{id}
+    	AND    AGNCY_PW = SHA2(#{oldPw},256)
+    </update>
+</mapper>

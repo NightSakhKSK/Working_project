@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>주문신청</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="사용자 주문 신청 페이지"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: darkgoldenrod!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #FFFFFF!important;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .valuebox {
+            margin-left:5px;
+            margin-right:5px;
+            width: 100px;
+            text-align: right;
+        }
+        .vchange {
+            width: 25px;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/metro-all.min.css">
+    <script src="/js/metro.min.js"></script>
+    <script>
+        function getOrders() {
+            var result = [];
+            var olr = document.querySelector(".orderlist").querySelectorAll(".row");
+            for(var i=0;i<olr.length;i++) {
+                if(olr[i]) {
+                    var el = olr[i].querySelector(".vname");
+                    var vl = olr[i].querySelector(".valuebox");
+                    if(el) {
+                        var name = el.textContent.trim();
+                        var value = vl.value;
+                        if(value > 0) {
+                            result.push({name:name, value:value});
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        function orderMakeList() {
+            var orders = getOrders();
+            var rb = document.getElementById("resultBox");
+            while (rb.firstChild) {
+                rb.removeChild(rb.firstChild);
+            }
+            for(var i=0;i<orders.length;i++) {
+                var row = document.createElement('div');
+                row.appendChild(document.createTextNode(orders[i].name + " " + orders[i].value + "EA"));
+                rb.appendChild(row);
+            }
+            document.getElementById('btnOrder').disabled = orders.length < 1;
+        }
+        function order() {
+            var ords = getOrders();
+            if(ords.length < 1) {
+                alert('주문내역이 없습니다.');
+            } else {
+                window.location.href = '/page/user/main.html';
+            }
+        }
+        function minus(e) {
+            var vbox = e.parentElement.querySelector(".valuebox");
+            if(vbox.value > 0) vbox.value = parseInt(vbox.value, 10) - 1;
+            orderMakeList();
+        }
+
+        function plus(e) {
+            var vbox = e.parentElement.querySelector(".valuebox");
+            vbox.value = parseInt(vbox.value, 10) + 1;
+            orderMakeList();
+        }
+    </script>
+</head>
+<body>
+    <header class="app-bar bg-hero fg-white app-bar-expand" data-role="appbar" data-expand="true" data-role-appbar="true">
+        <a href="#" class="brand no-hover">
+            <span style="max-width: 100px;  white-space: nowrap;" class="p-2">
+               KR-0002
+            </span>
+        </a>
+        <<div class="app-bar-container ml-auto d-flex-md">
+            <a href="main.html" class="app-bar-item text-upper"><span class='mif-cart'> 주문</span></a>
+            <a href="#" class="app-bar-item dropdown-toggle text-upper"><span class='mif-cog'> 설정</span></a>
+            <ul class="d-menu" data-role="dropdown">
+                <li><a href="changepw.html"><span class='mif-key'> 비밀번호 변경</span></a></li>
+                <li><a href="device.html"><span class='mif-phonelink-setup'> 디바이스 상태</span></a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div data-role="panel" data-title-caption="Total Order 3" data-title-icon="<span class='mif-news'></span>">
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Cylinder & Syrups</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Filters</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">Emergency</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">2</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">1</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid orderlist" style="padding-top: 20px;">
+            <div class="row">
+                <div class="cell-2">
+                    <div class="d-flex flex-justify-start" style="font-weight: bold; font-size: 20px;">ORDER</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell">
+                    <div class="vname d-flex flex-justify-start" data-name="Cylinder">
+                        Cylinder
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button class="vchange" onclick="minus(this);">-</button>
+                        <input class="valuebox" type="number" value="0">
+                        <button class="vchange" onclick="plus(this);">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">
+                    <div class="vname d-flex flex-justify-start" data-name="딸기">
+                        딸기
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button class="vchange" onclick="minus(this);">-</button>
+                        <input class="valuebox" type="number" value="0">
+                        <button class="vchange" onclick="plus(this);">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">
+                    <div class="vname d-flex flex-justify-start" data-name="민트">
+                        민트
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button class="vchange" onclick="minus(this);">-</button>
+                        <input class="valuebox" type="number" value="0">
+                        <button class="vchange" onclick="plus(this);">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">
+                    <div class="vname d-flex flex-justify-start" data-name="허브">
+                        허브
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button class="vchange" onclick="minus(this);">-</button>
+                        <input class="valuebox" type="number" value="0">
+                        <button class="vchange" onclick="plus(this);">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">
+                    <div class="vname d-flex flex-justify-start" data-name="콜라">
+                        콜라
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button class="vchange" onclick="minus(this);">-</button>
+                        <input class="valuebox" type="number" value="0">
+                        <button class="vchange" onclick="plus(this);">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">
+                    <div class="vname d-flex flex-justify-start" data-name="필터">
+                        필터
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button class="vchange" onclick="minus(this);">-</button>
+                        <input class="valuebox" type="number" value="0">
+                        <button class="vchange" onclick="plus(this);">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid" style="padding-top: 20px;">
+            <div class="row">
+                <div class="cell-2">
+                    <div class="d-flex flex-justify-start" style="font-weight: bold; font-size: 20px;">TOTAL</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell">
+                    <div id="resultBox">
+                        
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="d-flex flex-justify-end">
+                        <button id="btnOrder" onclick="order(this);" disabled>주문</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

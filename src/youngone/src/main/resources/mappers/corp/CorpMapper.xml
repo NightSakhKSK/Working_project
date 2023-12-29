@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.utarex.youngone.api.corp.repository.CorpRepo">
+	<select id="getInfo" resultType="Corp">
+        SELECT (SELECT COUNT(1) FROM TB_MC_INF) AS DEVICES
+              ,FILTER_CNT AS FILTERS
+              ,NONFILTER_CNT AS NONFILTERS
+              ,(SELECT COUNT(1) FROM TB_EMGCY_HIST) AS EMERGENCY
+        FROM   (SELECT SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN D.ORDER_QTY ELSE 0 END) AS FILTER_CNT
+                      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 0 ELSE D.ORDER_QTY END) AS NONFILTER_CNT
+			    FROM TB_ORDER_DTL_HIST D
+			   ) F
+    </select>
+    
+    <select id="getProcess" resultType="ProcessInfo">
+        SELECT FILTER_CNT AS FILTERS
+              ,NONFILTER_CNT AS NONFILTERS
+              ,(SELECT COUNT(1) FROM TB_EMGCY_HIST WHERE PROC_YN = 'Y') AS EMERGENCY
+        FROM   (SELECT SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN D.ORDER_QTY ELSE 0 END) AS FILTER_CNT
+                      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 0 ELSE D.ORDER_QTY END) AS NONFILTER_CNT
+				    FROM TB_ORDER_HIST O
+				    JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+				    WHERE O.PROC_YN = 'Y') F
+    </select>
+    
+    <select id="getDistribute" resultType="Distribute">
+        SELECT A.AGNCY_ID
+		      ,A.AGNCY_NM
+		      ,ORD.FILTER_CNT    AS FILTERS
+		      ,ORD.NONFILTER_CNT AS NONFILTERS
+		      ,MC.DEVICE_COUNT   AS DEVICES
+		      ,EM.EMERGENCY_CNT  AS EMERGENCY
+		FROM   TB_AGNCY_INF A
+		LEFT JOIN (			    
+			SELECT O.AGNCY_ID
+			      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 1 ELSE 0 END) AS FILTER_CNT
+			      ,SUM(CASE WHEN D.LG_CTGR_CD = 'Filter' THEN 0 ELSE 1 END) AS NONFILTER_CNT
+			FROM TB_ORDER_HIST O
+			JOIN TB_ORDER_DTL_HIST D ON D.ORDER_SEQ = O.ORDER_SEQ
+			GROUP BY O.AGNCY_ID
+		) ORD ON ORD.AGNCY_ID = A.AGNCY_ID
+		LEFT JOIN (
+			SELECT M.AGNCY_ID
+			      ,COUNT(1) AS DEVICE_COUNT
+			FROM TB_MC_INF M
+			GROUP BY M.AGNCY_ID
+		) MC ON MC.AGNCY_ID = A.AGNCY_ID
+		LEFT JOIN (
+			SELECT E.AGNCY_ID
+			      ,COUNT(1) AS EMERGENCY_CNT
+			FROM TB_EMGCY_HIST E
+			GROUP BY E.AGNCY_ID
+		) EM ON EM.AGNCY_ID = A.AGNCY_ID
+    </select>
+
+	<insert id="addAgency">
+        INSERT INTO TB_AGNCY_REG_INF
+        (
+          ADMR_ID
+         ,BSN_LCN_NO
+         ,ADDR
+         ,TEL_NO
+         ,MNGR_NM
+         ,TEMP_ISSD_NO
+         ,FIRST_REG_DTTI
+        ) VALUES (
+          #{admrId}
+         ,#{bsnLcnNo}
+         ,#{addr}
+         ,#{telNo}
+         ,#{mngrNm}
+         ,#{tempIssdNo}
+         ,NOW()
+        )
+    </insert>
+    
+    <update id="changePw">
+        UPDATE TB_CORP_INF SET
+    	       ADMR_PW = SHA2(#{newPw},256)
+    	WHERE  ADMR_ID = #{id}
+    	AND    ADMR_PW = SHA2(#{oldPw},256)
+    </update>
+    
+    <select id="getOrderList" resultType="Order">
+	    SELECT  TO_CHAR(O.ORDER_DTTI, 'YYYY / MM / DD') AS ORDER_DTTI
+		       ,O.ORDER_SEQ
+		       ,D.ORDER_DTL_SEQ
+		       ,M.MC_ID
+		       ,O.PROC_YN
+		       ,O.PROC_DTTI
+		       ,D.MD_CTGR_CD
+			   ,D.ORDER_QTY
+			   ,'ORDER' AS TP
+		 FROM TB_ORDER_HIST O
+		 JOIN TB_ORDER_DTL_HIST D ON O.ORDER_SEQ = D.ORDER_SEQ
+		 JOIN TB_MC_INF M ON O.USR_ID = M.USR_ID
+	    WHERE O.AGNCY_ID = #{agncyId}
+	    <if test="today == true">
+	    AND   DATE(O.ORDER_DTTI) = DATE(NOW())
+	    </if>
+		ORDER BY 1 DESC, 2 DESC, 3
+    </select>
+    
+    <select id="getEmergency" resultType="Emergency">
+    	SELECT E.EMGCY_SEQ AS SEQ
+    	      ,TO_CHAR(E.FIRST_REG_DTTI, 'YY/MM/DD') AS DATE
+    	      ,E.EMGCY_TP_CD
+    	      ,E.SYMPT_CNTN
+    	      ,E.STAT_CD
+    	      ,M.MC_ID
+    	FROM   TB_EMGCY_HIST E
+    	JOIN   TB_MC_INF M ON M.USR_ID = E.USR_ID
+    	WHERE  E.AGNCY_ID = #{agncyId}
+    	<if test="today == true">
+	    AND   DATE(E.FIRST_REG_DTTI) = DATE(NOW())
+	    </if>
+    	ORDER BY E.FIRST_REG_DTTI DESC
+    </select>
+</mapper>

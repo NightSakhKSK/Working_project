@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>본사 메인</title>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="본사 메인 페이지"/>
+    <meta name="keywords" content="IoT,음료머신,유타렉스"/>
+    <meta name="author" content="유타렉스"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--METRO4 UI-->
+    <style>
+        .app-bar {
+            background-color: darkgoldenrod!important;
+        }
+        .hamburger.dark .line, .nav-button.dark .line {
+            background-color: #FFFFFF!important;
+        }
+        .distribute {
+            background-color: #dea917!important;
+            border-radius: 10px;
+        }
+
+        tr.distribute {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="../../css/metro-all.min.css">
+    <script src="../../js/metro.min.js"></script>
+    <script>
+        function movestore(event) {
+            window.location.href = "./store.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="app-bar bg-hero fg-white" data-role="appbar">
+        <a href="#" class="brand no-hover">
+            <span style="max-width: 200px;  white-space: nowrap;" class="p-2">
+               경동 계양 대리점
+            </span>
+        </a>
+        <a id="order_link" href="./store-order.html" class="app-bar-item"><span class='mif-cart'> Order</span></a>
+        <a id="summary_link" href="./store.html" class="app-bar-item"><span class='mif-news'> Summary</span></a>
+        <ul class="app-bar-menu">
+            <li><a href="main.html"><span class='mif-home'> 본사 메인</span></a></li>
+            <li><a href="user-list.html"><span class='mif-list'> 제품 설치 목록</span></a></li>
+        </ul>
+    </div>
+    
+    <div class="container-fluid docs-content" style="height: auto !important;margin-top: 60px;">
+        <div data-role="panel" data-title-caption="Total Device 1004" data-title-icon="<span class='mif-news'></span>">
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">ORDER</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="font-weight: bold;">Filters</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">Emergency</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">30</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center">10</div>
+                    </div>
+                    <div class="cell">
+                        <div class="d-flex flex-justify-center" style="color:red;font-weight: bold;">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <h4>Emergency</h4>
+        <table class="table table-border cell-border">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+                <tr class="Emergency" onclick="moveuser.call(this, event)">
+                    <td>22/05/03</td>
+                    <td>Heatpump</td>
+                    <td>Fail</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

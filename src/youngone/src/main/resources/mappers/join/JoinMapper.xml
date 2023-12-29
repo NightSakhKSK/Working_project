@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.utarex.youngone.api.join.repository.JoinRepo">
+	<select id="getCheckId" resultType="int">
+	    SELECT IFNULL((SELECT 1 FROM TB_CORP_INF WHERE ADMR_ID = #{id}), 0)
+              +IFNULL((SELECT 1 FROM TB_AGNCY_INF WHERE AGNCY_ID = #{id}), 0)
+              +IFNULL((SELECT 1 FROM TB_USR_INF WHERE USR_ID = #{id}), 0) AS CNT
+    </select>
+    
+    <insert id="joinAgency">
+	    INSERT INTO TB_AGNCY_INF
+        (
+          AGNCY_ID
+         ,AGNCY_PW
+         ,AGNCY_NM
+         ,BSN_LCN_NO
+         ,ADDR
+         ,TEL_NO
+         ,MNGR_NM
+         ,FIRST_REG_DTTI
+        )
+        SELECT #{id} AS ID
+              ,SHA2(#{pw},256) AS PW
+              ,#{nm} as NM
+              ,BSN_LCN_NO
+              ,ADDR
+              ,TEL_NO
+              ,MNGR_NM
+              ,NOW()
+        FROM TB_AGNCY_REG_INF
+        WHERE TEMP_ISSD_NO = #{issuedNo}
+    </insert>
+    
+    <insert id="joinUser">
+	    INSERT INTO TB_USR_INF
+        (
+          USR_ID
+         ,USR_PW
+         ,FIRST_REG_DTTI
+        )
+        SELECT #{id} AS ID
+              ,SHA2(#{pw},256) as PW
+              ,NOW()
+        FROM TB_MC_INF
+        WHERE TEMP_ISSD_NO = #{issuedNo}
+    </insert>
+    <update id="joinUserMc">
+    	UPDATE TB_MC_INF
+    	SET USR_ID = #{id}
+    	WHERE  TEMP_ISSD_NO = #{issuedNo}
+    </update>
+</mapper>
